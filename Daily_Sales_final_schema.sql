@@ -78,10 +78,12 @@ SELECT
   ,sku_code
   ,billing_type 
   ,record_type
-  ,Volume AS Sell_In_Tons
-  ,Gross_Sales AS Sell_In_Gross_Sales
-  ,Gross_Sales + Trade_Incentives + Consumer_Incentives + Sales_Allow_Returns + NPD AS Sell_In_NR
+  ,SUM(Volume) AS Sell_In_Tons
+  ,SUM(Gross_Sales) AS Sell_In_Gross_Sales
+  ,SUM(Gross_Sales + Trade_Incentives + Consumer_Incentives + Sales_Allow_Returns + NPD) AS Sell_In_NR
 FROM DAILY_SALES_TABLE daily_data
 LEFT JOIN MAPPING_LA_COMP_CODE_MARKET Market_Mapping ON daily_data.Comp_code = market_mapping.comp_code_sap_ecc
+GROUP BY 1,2,3,4,5,6,7,8,9
+HAVING (Sell_In_Tons != 0 OR Sell_In_Gross_Sales != 0 OR Sell_In_NR != 0)
 
 )
